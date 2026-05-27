@@ -1,3 +1,4 @@
+import androidx.annotation.NonNull;
 package com.fountainpdl.comifountain.data.model;
 
 import androidx.room.ColumnInfo;
@@ -15,8 +16,9 @@ import java.util.List;
 public class Manga {
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "id")
-    public String id;
+    public String id = "";
 
     @ColumnInfo(name = "title")         public String title;
     @ColumnInfo(name = "cover")         public String cover;
