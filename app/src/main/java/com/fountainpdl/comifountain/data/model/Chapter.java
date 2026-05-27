@@ -32,7 +32,6 @@ import java.util.List;
 public class Chapter {
 
     @PrimaryKey
-    @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")             public String id = "";
 
