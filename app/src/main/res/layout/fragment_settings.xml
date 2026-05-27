@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="?attr/colorBackground">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Appearance" android:textSize="14sp" android:textStyle="bold"
+            android:textColor="?attr/colorPrimary" android:paddingBottom="8dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="Theme" android:textStyle="bold" android:paddingBottom="8dp"/>
+                <RadioGroup android:id="@+id/theme_group" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="horizontal">
+                    <RadioButton android:id="@+id/radio_theme_dark"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Dark" android:layout_marginEnd="16dp"/>
+                    <RadioButton android:id="@+id/radio_theme_light"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Light"/>
+                </RadioGroup>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="?attr/colorOutlineVariant" android:layout_marginVertical="12dp"/>
+
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="Sub-theme" android:textStyle="bold" android:paddingBottom="8dp"/>
+                <RadioGroup android:id="@+id/sub_theme_group" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="horizontal">
+                    <RadioButton android:id="@+id/radio_solid"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Solid" android:layout_marginEnd="8dp"/>
+                    <RadioButton android:id="@+id/radio_dual"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Dual-Shift" android:layout_marginEnd="8dp"/>
+                    <RadioButton android:id="@+id/radio_dynamic"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Dynamic"/>
+                </RadioGroup>
+
+                <LinearLayout android:id="@+id/panel_solid"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:paddingTop="12dp">
+                    <Button android:id="@+id/primary_color_btn"
+                        android:layout_width="0dp" android:layout_height="48dp"
+                        android:layout_weight="1" android:layout_marginEnd="8dp" android:text="Primary"/>
+                    <Button android:id="@+id/secondary_color_btn"
+                        android:layout_width="0dp" android:layout_height="48dp"
+                        android:layout_weight="1" android:text="Secondary"/>
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/panel_dual_shift"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:paddingTop="12dp" android:visibility="gone">
+                    <Button android:id="@+id/shift_color1_btn"
+                        android:layout_width="0dp" android:layout_height="48dp"
+                        android:layout_weight="1" android:layout_marginEnd="8dp" android:text="Color 1"/>
+                    <Button android:id="@+id/shift_color2_btn"
+                        android:layout_width="0dp" android:layout_height="48dp"
+                        android:layout_weight="1" android:text="Color 2"/>
+                </LinearLayout>
+
+                <TextView android:id="@+id/panel_dynamic"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:paddingTop="12dp" android:visibility="gone"
+                    android:text="Uses system accent (Android 12+) or time-of-day palette."
+                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Reader" android:textSize="14sp" android:textStyle="bold"
+            android:textColor="?attr/colorPrimary" android:paddingBottom="8dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent" android:layout_height="wrap_content">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Grayscale"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_grayscale"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:paddingTop="8dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Invert Colors"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_invert"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:paddingTop="8dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Crop Borders"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_crop_borders"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:paddingTop="8dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Keep Screen On"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_keep_screen"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

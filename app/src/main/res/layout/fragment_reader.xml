@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#000">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/reader_pager"
+        android:layout_width="match_parent" android:layout_height="match_parent"/>
+
+    <ProgressBar android:id="@+id/reader_progress"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="center" android:visibility="gone"/>
+
+    <LinearLayout android:id="@+id/reader_top_bar"
+        android:layout_width="match_parent" android:layout_height="56dp"
+        android:layout_gravity="top" android:orientation="horizontal"
+        android:gravity="center_vertical" android:background="#AA000000" android:paddingHorizontal="8dp">
+
+        <ImageButton android:id="@+id/reader_back_btn"
+            android:layout_width="48dp" android:layout_height="48dp"
+            android:src="@drawable/ic_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back" android:tint="#FFFFFF"/>
+
+        <TextView android:id="@+id/reader_chapter_title"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:textColor="#FFFFFF" android:textSize="15sp"
+            android:singleLine="true" android:ellipsize="end" android:paddingHorizontal="8dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/reader_bottom_bar"
+        android:layout_width="match_parent" android:layout_height="72dp"
+        android:layout_gravity="bottom" android:orientation="horizontal"
+        android:gravity="center_vertical" android:background="#AA000000" android:paddingHorizontal="8dp">
+
+        <TextView android:id="@+id/page_indicator"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textColor="#FFFFFF" android:textSize="13sp"
+            android:minWidth="52dp" android:gravity="center"/>
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/page_slider"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:valueFrom="0" android:valueTo="1" android:stepSize="1"/>
+
+    </LinearLayout>
+
+</FrameLayout>

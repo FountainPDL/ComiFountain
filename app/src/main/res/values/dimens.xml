@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bottom_nav_height">56dp</dimen>
+    <dimen name="manga_card_corner">8dp</dimen>
+    <dimen name="manga_cover_height">200dp</dimen>
+    <dimen name="grid_spacing">6dp</dimen>
+    <dimen name="detail_cover_width">120dp</dimen>
+    <dimen name="detail_cover_height">180dp</dimen>
+    <dimen name="source_card_corner">12dp</dimen>
+</resources>

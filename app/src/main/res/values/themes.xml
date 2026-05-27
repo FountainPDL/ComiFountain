@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ComiFountain" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/cf_purple</item>
+        <item name="colorSecondary">@color/cf_red</item>
+        <item name="colorBackground">@color/background_dark</item>
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/text_primary_dark</item>
+        <item name="android:navigationBarColor">@color/surface_dark</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
+</resources>

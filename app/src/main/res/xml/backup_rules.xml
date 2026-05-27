@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="sharedpref" path="comifountain_prefs.xml"/>
+    <exclude domain="database" path="comifountain.db-shm"/>
+    <exclude domain="database" path="comifountain.db-wal"/>
+</full-backup-content>
