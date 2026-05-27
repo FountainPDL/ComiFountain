@@ -50,7 +50,7 @@ public class SearchFragment extends Fragment {
         viewModel.state.observe(getViewLifecycleOwner(), s -> {
             binding.progressBar.setVisibility(s == SearchViewModel.State.LOADING ? View.VISIBLE : View.GONE);
         });
-        viewModel.results.observe(getViewLifecycleOwner(), adapter::submitList);
+        viewModel.results.observe(getViewLifecycleOwner(), list -> adapter.submitList(list));
 
         if (savedInstanceState == null) viewModel.search("", 1);
     }

@@ -39,7 +39,7 @@ public class SettingsFragment extends Fragment {
 
         switch (prefs.getSubTheme()) {
             case "solid":       binding.radioSolid.setChecked(true);     showPanel("solid"); break;
-            case "dual-shift":  binding.radioDualShift.setChecked(true); showPanel("dual");  break;
+            case "dual-shift":  binding.radioDual.setChecked(true); showPanel("dual");  break;
             case "dynamic":     binding.radioDynamic.setChecked(true);   showPanel("dyn");   break;
         }
 
