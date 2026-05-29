@@ -2,6 +2,7 @@ package com.fountainpdl.comifountain.data.db;
 
 import android.content.Context;
 import androidx.room.*;
+import androidx.room.migration.Migration;
 import com.fountainpdl.comifountain.data.model.*;
 
 @Database(
