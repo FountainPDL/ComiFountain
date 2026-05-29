@@ -3,17 +3,65 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical" android:background="?android:attr/colorBackground">
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="Sources" android:textSize="22sp" android:textStyle="bold" android:padding="16dp"/>
+    <!-- Tab bar -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:background="?attr/colorSurface">
+        <TextView android:id="@+id/tab_browse"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="Browse"
+            android:gravity="center" android:textStyle="bold"
+            android:background="?attr/selectableItemBackground"/>
+        <TextView android:id="@+id/tab_extensions"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="Extensions"
+            android:gravity="center" android:textStyle="bold"
+            android:background="?attr/selectableItemBackground"/>
+        <TextView android:id="@+id/tab_migration"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="Migration"
+            android:gravity="center" android:textStyle="bold"
+            android:background="?attr/selectableItemBackground"/>
+    </LinearLayout>
 
-    <Button android:id="@+id/pick_folder_btn"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_marginStart="16dp" android:text="📁  Pick Local Folder"
-        style="@style/Widget.Material3.Button.OutlinedButton"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/sources_recycler"
+    <!-- Browse panel -->
+    <LinearLayout android:id="@+id/browse_panel_container"
         android:layout_width="match_parent" android:layout_height="0dp"
-        android:layout_weight="1" android:padding="8dp" android:clipToPadding="false"/>
+        android:layout_weight="1" android:orientation="vertical">
+        <Button android:id="@+id/pick_folder_btn"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_margin="12dp" android:text="📁  Set Local Folder"
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/browse_recycler"
+            android:layout_width="match_parent" android:layout_height="0dp"
+            android:layout_weight="1" android:padding="8dp" android:clipToPadding="false"/>
+    </LinearLayout>
+
+    <!-- Extensions panel -->
+    <LinearLayout android:id="@+id/extensions_panel_container"
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:orientation="vertical" android:visibility="gone">
+        <Button android:id="@+id/add_source_btn"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_margin="12dp" android:text="＋  Add Source URL"
+            style="@style/Widget.Material3.Button"/>
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/extensions_recycler"
+            android:layout_width="match_parent" android:layout_height="0dp"
+            android:layout_weight="1" android:padding="8dp" android:clipToPadding="false"/>
+    </LinearLayout>
+
+    <!-- Migration panel -->
+    <LinearLayout android:id="@+id/migration_panel_container"
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:orientation="vertical"
+        android:gravity="center" android:padding="24dp" android:visibility="gone">
+        <TextView android:id="@+id/migration_info"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textAlignment="center" android:alpha="0.7" android:paddingBottom="16dp"/>
+        <Button android:id="@+id/start_migration_btn"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Start Migration"
+            style="@style/Widget.Material3.Button"/>
+    </LinearLayout>
 
 </LinearLayout>

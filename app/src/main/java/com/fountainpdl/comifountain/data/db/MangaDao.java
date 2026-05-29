@@ -59,5 +59,8 @@ public interface MangaDao {
     int getLibraryCount();
 
     @Query("SELECT COUNT(*) FROM manga WHERE in_library = 1 AND unread_count > 0")
+    @Query("SELECT * FROM manga WHERE in_library = 1 ORDER BY last_read DESC")
+    List<Manga> getLibraryMangaSync();
+
     LiveData<Integer> getUpdatesBadgeCount();
 }

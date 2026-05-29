@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical" android:padding="16dp"
+    android:background="?attr/selectableItemBackground">
+    <TextView android:id="@+id/history_manga"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="14sp" android:textStyle="bold" android:maxLines="1" android:ellipsize="end"/>
+    <TextView android:id="@+id/history_chapter"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="12sp" android:alpha="0.7"/>
+    <TextView android:id="@+id/history_date"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="11sp" android:alpha="0.5"/>
+</LinearLayout>

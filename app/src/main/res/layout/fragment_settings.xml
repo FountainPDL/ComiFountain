@@ -6,9 +6,11 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="16dp">
 
+        <!-- ── APPEARANCE ──────────────────────────────────────────────────── -->
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Appearance" android:textSize="14sp" android:textStyle="bold"
-            android:textColor="?attr/colorPrimary" android:paddingBottom="8dp"/>
+            android:text="APPEARANCE" android:textSize="11sp" android:textStyle="bold"
+            android:letterSpacing="0.12" android:textColor="?attr/colorPrimary"
+            android:paddingBottom="8dp"/>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -21,72 +23,123 @@
                 <RadioGroup android:id="@+id/theme_group" android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:orientation="horizontal">
                     <RadioButton android:id="@+id/radio_theme_dark"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Dark" android:layout_marginEnd="16dp"/>
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Dark"/>
+                    <RadioButton android:id="@+id/radio_theme_amoled"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="AMOLED"/>
                     <RadioButton android:id="@+id/radio_theme_light"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Light"/>
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Light"/>
                 </RadioGroup>
 
                 <View android:layout_width="match_parent" android:layout_height="1dp"
                     android:background="?attr/colorOutlineVariant" android:layout_marginVertical="12dp"/>
 
                 <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="Sub-theme" android:textStyle="bold" android:paddingBottom="8dp"/>
+                    android:text="Accent Theme" android:textStyle="bold" android:paddingBottom="8dp"/>
                 <RadioGroup android:id="@+id/sub_theme_group" android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:orientation="horizontal">
                     <RadioButton android:id="@+id/radio_solid"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Solid" android:layout_marginEnd="8dp"/>
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Solid"/>
                     <RadioButton android:id="@+id/radio_dual"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Dual-Shift" android:layout_marginEnd="8dp"/>
-                    <RadioButton android:id="@+id/radio_dynamic"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Dynamic"/>
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Dual-Shift"/>
+                    <RadioButton android:id="@+id/radio_material_you"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Material You"/>
                 </RadioGroup>
 
+                <!-- Solid color panel -->
                 <LinearLayout android:id="@+id/panel_solid"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:paddingTop="12dp">
                     <Button android:id="@+id/primary_color_btn"
                         android:layout_width="0dp" android:layout_height="48dp"
-                        android:layout_weight="1" android:layout_marginEnd="8dp" android:text="Primary"/>
+                        android:layout_weight="1" android:layout_marginEnd="8dp"
+                        android:text="Primary" android:textColor="#FFFFFF"/>
                     <Button android:id="@+id/secondary_color_btn"
                         android:layout_width="0dp" android:layout_height="48dp"
-                        android:layout_weight="1" android:text="Secondary"/>
+                        android:layout_weight="1" android:text="Secondary" android:textColor="#FFFFFF"/>
                 </LinearLayout>
 
+                <!-- Dual-shift panel -->
                 <LinearLayout android:id="@+id/panel_dual_shift"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:paddingTop="12dp" android:visibility="gone">
-                    <Button android:id="@+id/shift_color1_btn"
-                        android:layout_width="0dp" android:layout_height="48dp"
-                        android:layout_weight="1" android:layout_marginEnd="8dp" android:text="Color 1"/>
-                    <Button android:id="@+id/shift_color2_btn"
-                        android:layout_width="0dp" android:layout_height="48dp"
-                        android:layout_weight="1" android:text="Color 2"/>
+                    android:orientation="vertical" android:paddingTop="12dp" android:visibility="gone">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <Button android:id="@+id/shift_color1_btn"
+                            android:layout_width="0dp" android:layout_height="48dp"
+                            android:layout_weight="1" android:layout_marginEnd="8dp"
+                            android:text="Color 1" android:textColor="#FFFFFF"/>
+                        <Button android:id="@+id/shift_color2_btn"
+                            android:layout_width="0dp" android:layout_height="48dp"
+                            android:layout_weight="1" android:text="Color 2" android:textColor="#FFFFFF"/>
+                    </LinearLayout>
                 </LinearLayout>
 
+                <!-- Material You panel -->
                 <TextView android:id="@+id/panel_dynamic"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:paddingTop="12dp" android:visibility="gone"
-                    android:text="Uses system accent (Android 12+) or time-of-day palette."
+                    android:text="Pulls colors from your wallpaper (Android 12+) with time-of-day fallback."
                     android:textColor="?attr/colorOnSurfaceVariant"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- ── READER ───────────────────────────────────────────────────────── -->
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Reader" android:textSize="14sp" android:textStyle="bold"
-            android:textColor="?attr/colorPrimary" android:paddingBottom="8dp"/>
+            android:text="READER" android:textSize="11sp" android:textStyle="bold"
+            android:letterSpacing="0.12" android:textColor="?attr/colorPrimary"
+            android:paddingBottom="8dp"/>
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent" android:layout_height="wrap_content">
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:padding="16dp">
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                <!-- Reading mode row -->
+                <LinearLayout android:id="@+id/reading_mode_row"
+                    android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:text="Reading Mode" android:textSize="15sp"/>
+                        <TextView android:id="@+id/reading_mode_value"
+                            android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:textSize="12sp" android:alpha="0.6"/>
+                    </LinearLayout>
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                        android:src="@drawable/ic_settings" android:alpha="0.4"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="?attr/colorOutlineVariant" android:layout_marginVertical="4dp"/>
+
+                <!-- Toggle rows -->
+                    android:id="@+id/row_fullscreen"/>
+                    android:id="@+id/row_grayscale"/>
+                    android:id="@+id/row_invert"/>
+                    android:id="@+id/row_crop"/>
+                    android:id="@+id/row_keep_screen"/>
+                    android:id="@+id/row_page_anim"/>
+
+                <!-- Fullscreen switch  -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Fullscreen Reader"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_fullscreen"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
                     android:orientation="horizontal" android:gravity="center_vertical">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:text="Grayscale"/>
@@ -94,34 +147,215 @@
                         android:id="@+id/switch_grayscale"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical" android:paddingTop="8dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:text="Invert Colors"/>
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switch_invert"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical" android:paddingTop="8dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:text="Crop Borders"/>
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switch_crop_borders"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical" android:paddingTop="8dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:text="Keep Screen On"/>
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switch_keep_screen"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Page Turn Animation"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_page_anim"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
 
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── LIBRARY ──────────────────────────────────────────────────────── -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="LIBRARY" android:textSize="11sp" android:textStyle="bold"
+            android:letterSpacing="0.12" android:textColor="?attr/colorPrimary"
+            android:paddingBottom="8dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Show Unread Badge"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_show_unread"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Show Downloaded Badge"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_show_downloaded"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Compact Grid"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_compact"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="Grid Columns" android:paddingTop="8dp" android:paddingBottom="4dp"/>
+                <TextView android:id="@+id/cols_value"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textSize="12sp" android:alpha="0.6"/>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/cols_slider"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:valueFrom="2" android:valueTo="5" android:stepSize="1"/>
+
+                <Button android:id="@+id/add_category_btn"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" android:text="＋  Add Category"
+                    style="@style/Widget.Material3.Button.OutlinedButton"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── DOWNLOAD ─────────────────────────────────────────────────────── -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="DOWNLOADS" android:textSize="11sp" android:textStyle="bold"
+            android:letterSpacing="0.12" android:textColor="?attr/colorPrimary"
+            android:paddingBottom="8dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+
+                <LinearLayout android:id="@+id/download_location_row"
+                    android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:text="Download Location" android:textSize="15sp"/>
+                        <TextView android:id="@+id/download_location_value"
+                            android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:textSize="12sp" android:alpha="0.6"/>
+                    </LinearLayout>
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                        android:src="@drawable/ic_settings" android:alpha="0.4"/>
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/download_quality_row"
+                    android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:text="Download Quality" android:textSize="15sp"/>
+                        <TextView android:id="@+id/download_quality_value"
+                            android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:textSize="12sp" android:alpha="0.6"/>
+                    </LinearLayout>
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                        android:src="@drawable/ic_settings" android:alpha="0.4"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Wi-Fi Only"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_wifi_only"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Delete After Reading"/>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_auto_delete"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── CONTENT ──────────────────────────────────────────────────────── -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="CONTENT" android:textSize="11sp" android:textStyle="bold"
+            android:letterSpacing="0.12" android:textColor="?attr/colorPrimary"
+            android:paddingBottom="8dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:text="Show 18+ Content"/>
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:text="Show adult manga from supported sources"
+                            android:textSize="12sp" android:alpha="0.6"/>
+                    </LinearLayout>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_18_plus"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── BACKUP ───────────────────────────────────────────────────────── -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="BACKUP &amp; RESTORE" android:textSize="11sp" android:textStyle="bold"
+            android:letterSpacing="0.12" android:textColor="?attr/colorPrimary"
+            android:paddingBottom="8dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="Backup your library, reading progress, categories, and history to a JSON file."
+                    android:textSize="13sp" android:alpha="0.7" android:paddingBottom="12dp"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button android:id="@+id/create_backup_btn"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:layout_marginEnd="8dp"
+                        android:text="Create Backup"
+                        style="@style/Widget.Material3.Button"/>
+                    <Button android:id="@+id/restore_backup_btn"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Restore"
+                        style="@style/Widget.Material3.Button.OutlinedButton"/>
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

@@ -8,6 +8,8 @@ import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import com.fountainpdl.comifountain.databinding.ActivityMainBinding;
+import com.fountainpdl.comifountain.ui.common.ThemeHelper;
+import com.fountainpdl.comifountain.ui.history.HistoryFragment;
 import com.fountainpdl.comifountain.ui.library.LibraryFragment;
 import com.fountainpdl.comifountain.ui.search.SearchFragment;
 import com.fountainpdl.comifountain.ui.sources.SourcesFragment;
@@ -18,18 +20,25 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
-    private static final String TAG_LIBRARY  = "library";
-    private static final String TAG_SEARCH   = "search";
-    private static final String TAG_SOURCES  = "sources";
-    private static final String TAG_UPDATES  = "updates";
-    private static final String TAG_SETTINGS = "settings";
+    public static final String TAG_LIBRARY  = "library";
+    public static final String TAG_SEARCH   = "search";
+    public static final String TAG_SOURCES  = "sources";
+    public static final String TAG_UPDATES  = "updates";
+    public static final String TAG_SETTINGS = "settings";
+    public static final String TAG_HISTORY  = "history";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Apply theme BEFORE super.onCreate
+        ThemeHelper.applyTheme(this);
         super.onCreate(savedInstanceState);
+
+        // Full edge-to-edge
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         setupBottomNav();
         if (savedInstanceState == null) showFragment(TAG_LIBRARY);
     }
@@ -67,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
             case TAG_SOURCES:  return new SourcesFragment();
             case TAG_UPDATES:  return new UpdatesFragment();
             case TAG_SETTINGS: return new SettingsFragment();
+            case TAG_HISTORY:  return new HistoryFragment();
             default:           return new LibraryFragment();
         }
     }

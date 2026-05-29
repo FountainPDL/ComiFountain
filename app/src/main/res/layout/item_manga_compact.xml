@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_margin="4dp">
+
+    <ImageView android:id="@+id/manga_cover"
+        android:layout_width="match_parent" android:layout_height="140dp"
+        android:scaleType="centerCrop" android:background="@color/surface_variant"/>
+
+    <TextView android:id="@+id/manga_unread_badge"
+        android:layout_width="24dp" android:layout_height="24dp"
+        android:layout_gravity="top|end" android:layout_margin="3dp"
+        android:background="@drawable/bg_badge" android:gravity="center"
+        android:textColor="#FFFFFF" android:textSize="10sp"
+        android:visibility="gone"/>
+
+    <TextView android:id="@+id/manga_title"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_gravity="bottom" android:background="@drawable/gradient_bottom"
+        android:padding="6dp" android:textColor="#FFFFFF"
+        android:textSize="11sp" android:maxLines="1" android:ellipsize="end"/>
+
+    <!-- Hidden — not shown in compact -->
+    <TextView android:id="@+id/manga_source" android:layout_width="0dp"
+        android:layout_height="0dp" android:visibility="gone"/>
+    <TextView android:id="@+id/manga_status" android:layout_width="0dp"
+        android:layout_height="0dp" android:visibility="gone"/>
+
+</FrameLayout>
