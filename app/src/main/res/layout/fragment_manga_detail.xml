@@ -87,6 +87,16 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"/>
 
+        <TextView
+            android:id="@+id/empty_chapters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No chapters found"
+            android:gravity="center"
+            android:padding="24dp"
+            android:visibility="gone"
+            android:alpha="0.6"/>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
