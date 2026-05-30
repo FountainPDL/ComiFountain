@@ -31,7 +31,8 @@ public class SearchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+        // Use activity scope so state survives tab switches
+        viewModel = new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
 
         adapter = new MangaGridAdapter(new MangaGridAdapter.Listener() {
             @Override public void onClick(Manga m)     { openDetail(m); }
@@ -43,36 +44,71 @@ public class SearchFragment extends Fragment {
         setupSourcePicker();
 
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override public boolean onQueryTextSubmit(String q)  { viewModel.search(q, 1); return true; }
-            @Override public boolean onQueryTextChange(String t)  { if (t.isEmpty()) viewModel.search("", 1); return false; }
+            @Override public boolean onQueryTextSubmit(String q) {
+                viewModel.search(q, 1);
+                return true;
+            }
+            @Override public boolean onQueryTextChange(String t) {
+                if (t.isEmpty()) viewModel.search("", 1);
+                return false;
+            }
         });
+
+        // Restore existing query in SearchView
+        String existing = viewModel.getCurrentQuery();
+        if (!existing.isEmpty()) binding.searchView.setQuery(existing, false);
 
         viewModel.state.observe(getViewLifecycleOwner(), s -> {
-            binding.progressBar.setVisibility(s == SearchViewModel.State.LOADING ? View.VISIBLE : View.GONE);
+            binding.progressBar.setVisibility(
+                s == SearchViewModel.State.LOADING ? View.VISIBLE : View.GONE);
+            binding.emptySearch.setVisibility(
+                s == SearchViewModel.State.RESULTS
+                && (viewModel.results.getValue() == null
+                    || viewModel.results.getValue().isEmpty())
+                    ? View.VISIBLE : View.GONE);
         });
-        viewModel.results.observe(getViewLifecycleOwner(), list -> adapter.submitList(list));
 
-        if (savedInstanceState == null) viewModel.search("", 1);
+        viewModel.results.observe(getViewLifecycleOwner(), list -> {
+            adapter.submitList(list);
+        });
+
+        viewModel.errorMsg.observe(getViewLifecycleOwner(), err -> {
+            if (err != null && !err.isEmpty())
+                com.fountainpdl.comifountain.ui.common.ToastManager
+                    .showLong(requireContext(), "Error: " + err);
+        });
+
+        // Browse featured if no prior state
+        if (viewModel.results.getValue() == null || viewModel.results.getValue().isEmpty()) {
+            viewModel.search("", 1);
+        }
     }
 
     private void setupSourcePicker() {
-        List<Source> sources = SourceRegistry.getInstance(requireContext()).getAll();
+        List<Source> sources = SourceManager.getInstance(requireContext()).getAll();
         String[] names = sources.stream().map(Source::getName).toArray(String[]::new);
-        binding.sourcePickerBtn.setText(getSourceName(sources));
+
+        // Show current source name
+        updateSourceLabel(sources);
+
         binding.sourcePickerBtn.setOnClickListener(v ->
             new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                 .setTitle("Select Source")
                 .setItems(names, (d, which) -> {
-                    Source chosen = sources.get(which);
-                    viewModel.setSource(chosen.getId());
-                    binding.sourcePickerBtn.setText(chosen.getName());
+                    viewModel.setSource(sources.get(which).getId());
+                    updateSourceLabel(sources);
                 }).show());
     }
 
-    private String getSourceName(List<Source> sources) {
+    private void updateSourceLabel(List<Source> sources) {
         String id = viewModel.sourceId.getValue();
-        for (Source s : sources) if (s.getId().equals(id)) return s.getName();
-        return sources.isEmpty() ? "Source" : sources.get(0).getName();
+        for (Source s : sources) {
+            if (s.getId().equals(id)) {
+                binding.sourcePickerBtn.setText(s.getName());
+                return;
+            }
+        }
+        if (!sources.isEmpty()) binding.sourcePickerBtn.setText(sources.get(0).getName());
     }
 
     private void openDetail(Manga manga) {

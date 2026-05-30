@@ -12,9 +12,11 @@ import java.util.*;
 
 public class AllMangaSource implements Source {
 
-    public static final String ID  = "allanime";
+    public static final String ID   = "allanime";
     private static final String API = "https://api.allanime.day/api";
     private static final Gson   GS  = new Gson();
+
+    // ── Queries ───────────────────────────────────────────────────────────────
 
     private static final String Q_SEARCH =
         "query($search:SearchInput,$limit:Int,$page:Int,$countryOrigin:VaildCountryOriginEnumType){" +
@@ -22,15 +24,18 @@ public class AllMangaSource implements Source {
         "edges{_id name thumbnail description genres status}}}";
 
     private static final String Q_DETAIL =
-        "query($id:String!){manga(_id:$id){_id name thumbnail description authors genres status}}";
+        "query($id:String!){manga(_id:$id){" +
+        "_id name thumbnail description authors genres status " +
+        "availableChaptersDetail}}";
 
+    // Correct chapter list query for AllManga
     private static final String Q_CHAPTERS =
-        "query($id:String!,$chapterNumStart:Float,$chapterNumEnd:Float){" +
-        "manga(_id:$id){chapters(chapterNumStart:$chapterNumStart,chapterNumEnd:$chapterNumEnd){" +
-        "edges{chapterNum uploadDate}}}}";
+        "query($id:String!){manga(_id:$id){" +
+        "availableChaptersDetail " +
+        "chapters{edges{_id chapterNum uploadDate title}}}}";
 
     private static final String Q_PAGES =
-        "query($chapterId:String!,$chapterNum:Float){" +
+        "query($chapterId:String!,$chapterNum:Float!){" +
         "chapterPages(chapterId:$chapterId,chapterNum:$chapterNum){" +
         "edges{pictureUrls pageNum}}}";
 
@@ -43,12 +48,13 @@ public class AllMangaSource implements Source {
     @Override
     public List<Manga> browse(int page) throws Exception {
         Map<String,Object> search = new HashMap<>();
-        search.put("isManga", true);
-        search.put("sortBy", "Latest");
+        search.put("isManga",  true);
+        search.put("sortBy",   "Latest");
+        search.put("allowAdult", false);
         Map<String,Object> vars = new HashMap<>();
         vars.put("search", search);
-        vars.put("limit", 20);
-        vars.put("page",  page);
+        vars.put("limit",  20);
+        vars.put("page",   page);
         vars.put("countryOrigin", "ALL");
         return parseSearch(GqlClient.query(API, Q_SEARCH, vars, headers()));
     }
@@ -78,7 +84,7 @@ public class AllMangaSource implements Source {
             DetailResp r = GS.fromJson(json, DetailResp.class);
             if (r == null || r.data == null || r.data.manga == null) return null;
             MangaDetail d = r.data.manga;
-            Manga m = new Manga(Manga.buildId(ID, d._id), d.name, d.thumbnail, ID, getName());
+            Manga m = new Manga(Manga.buildId(ID, d._id), d.name, fixCoverUrl(d.thumbnail), ID, getName());
             m.description = d.description;
             m.author      = (d.authors != null && !d.authors.isEmpty()) ? d.authors.get(0) : "";
             if (d.genres != null) m.genres = d.genres;
@@ -91,56 +97,66 @@ public class AllMangaSource implements Source {
     @Override
     public List<Chapter> getChapterList(String mangaId) throws Exception {
         Map<String,Object> vars = new HashMap<>();
-        vars.put("id",              mangaId);
-        vars.put("chapterNumStart", 0);
-        vars.put("chapterNumEnd",   99999);
+        vars.put("id", mangaId);
         String json = GqlClient.query(API, Q_CHAPTERS, vars, headers());
         List<Chapter> chapters = new ArrayList<>();
         try {
             ChapterResp r = GS.fromJson(json, ChapterResp.class);
-            if (r == null || r.data == null || r.data.manga == null
-                    || r.data.manga.chapters == null) return chapters;
+            if (r == null || r.data == null || r.data.manga == null) return chapters;
+            if (r.data.manga.chapters == null || r.data.manga.chapters.edges == null)
+                return chapters;
             int index = 0;
-            for (ChapterEdge e : r.data.manga.chapters.edges) {
+            List<ChapterEdge> edges = r.data.manga.chapters.edges;
+            for (ChapterEdge e : edges) {
+                if (e == null) continue;
                 float num = e.chapterNum;
-                String chapId = Chapter.buildId(ID, "sub|" + num);
-                Chapter c = new Chapter(
-                    chapId, Manga.buildId(ID, mangaId), ID,
-                    "Chapter " + (num == (int)num ? String.valueOf((int)num) : num),
-                    num, e.uploadDate != null ? parseDate(e.uploadDate) : 0);
+                // chapterId format for pages query: rawId|chapterNum
+                String rawId   = e._id != null ? e._id : ("sub|" + num);
+                String chapId  = Chapter.buildId(ID, rawId + "|" + num);
+                String title   = (e.title != null && !e.title.isEmpty())
+                    ? e.title
+                    : "Chapter " + (num == (int)num ? String.valueOf((int)num) : String.valueOf(num));
+                Chapter c = new Chapter(chapId, Manga.buildId(ID, mangaId), ID, title, num,
+                    e.uploadDate != null ? parseDate(e.uploadDate) : 0);
                 c.index = index++;
                 chapters.add(c);
             }
+            // Sort newest first
+            chapters.sort((a, b) -> Float.compare(b.number, a.number));
         } catch (Exception e) { e.printStackTrace(); }
         return chapters;
     }
 
     @Override
     public List<Page> getPageList(String mangaId, String chapterId) throws Exception {
-        String[] parts = chapterId.split("\\|");
-        float chapterNum = 0;
-        String rawId = chapterId;
-        if (parts.length == 2) {
-            rawId = parts[0];
-            try { chapterNum = Float.parseFloat(parts[1]); } catch (Exception ignored) {}
-        }
+        // chapterId: "allanime:rawId|chapterNum"
+        String raw = chapterId.substring(chapterId.indexOf(':') + 1);
+        String[] parts = raw.split("\\|");
+        String rawId  = parts[0];
+        float chapNum = parts.length > 1 ? parseFloat(parts[1]) : 0;
+
         Map<String,Object> vars = new HashMap<>();
         vars.put("chapterId",  rawId);
-        vars.put("chapterNum", chapterNum);
+        vars.put("chapterNum", chapNum);
         String json = GqlClient.query(API, Q_PAGES, vars, headers());
         List<Page> pages = new ArrayList<>();
         try {
             PageResp r = GS.fromJson(json, PageResp.class);
             if (r == null || r.data == null || r.data.chapterPages == null) return pages;
             for (PageEdge e : r.data.chapterPages.edges) {
-                if (e.pictureUrls != null)
-                    for (String url : e.pictureUrls)
-                        pages.add(new Page(e.pageNum - 1, url));
+                if (e.pictureUrls != null) {
+                    for (String url : e.pictureUrls) {
+                        if (url != null && !url.isEmpty())
+                            pages.add(new Page(e.pageNum - 1, url));
+                    }
+                }
             }
             pages.sort((a, b) -> Integer.compare(a.index, b.index));
         } catch (Exception e) { e.printStackTrace(); }
         return pages;
     }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private List<Manga> parseSearch(String json) {
         List<Manga> result = new ArrayList<>();
@@ -148,7 +164,9 @@ public class AllMangaSource implements Source {
             SearchResp r = GS.fromJson(json, SearchResp.class);
             if (r == null || r.data == null || r.data.mangas == null) return result;
             for (MangaEdge e : r.data.mangas.edges) {
-                Manga m = new Manga(Manga.buildId(ID, e._id), e.name, e.thumbnail, ID, getName());
+                if (e == null || e._id == null) continue;
+                Manga m = new Manga(Manga.buildId(ID, e._id), e.name,
+                    fixCoverUrl(e.thumbnail), ID, getName());
                 if (e.genres != null) m.genres = e.genres;
                 m.status      = e.status != null ? e.status.toLowerCase() : "unknown";
                 m.description = e.description;
@@ -159,9 +177,24 @@ public class AllMangaSource implements Source {
         return result;
     }
 
+    /** AllManga thumbnails sometimes come as relative paths — fix them. */
+    private String fixCoverUrl(String url) {
+        if (url == null) return null;
+        if (url.startsWith("//")) return "https:" + url;
+        if (url.startsWith("/")) return "https://wp.allanime.day" + url;
+        return url;
+    }
+
     private long parseDate(String d) {
-        try { return new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(d).getTime(); }
-        catch (Exception e) { return 0; }
+        try { return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).parse(d).getTime(); }
+        catch (Exception e1) {
+            try { return new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(d).getTime(); }
+            catch (Exception e2) { return 0; }
+        }
+    }
+
+    private float parseFloat(String s) {
+        try { return Float.parseFloat(s); } catch (Exception e) { return 0; }
     }
 
     private Map<String,String> headers() {
@@ -171,7 +204,8 @@ public class AllMangaSource implements Source {
         return h;
     }
 
-    // Gson response classes
+    // ── Gson response classes ─────────────────────────────────────────────────
+
     static class SearchResp  { SearchData  data; static class SearchData  { MangaList  mangas; } static class MangaList  { List<MangaEdge>   edges; } }
     static class DetailResp  { DetailData  data; static class DetailData  { MangaDetail manga; } }
     static class ChapterResp { ChapterData data; static class ChapterData { MangaChaps  manga; } static class MangaChaps { ChapList chapters; } static class ChapList { List<ChapterEdge> edges; } }
@@ -179,6 +213,6 @@ public class AllMangaSource implements Source {
 
     static class MangaEdge   { @SerializedName("_id") String _id; String name, thumbnail, description, status; List<String> genres; }
     static class MangaDetail { @SerializedName("_id") String _id; String name, thumbnail, description, status; List<String> authors, genres; }
-    static class ChapterEdge { float chapterNum; String uploadDate; }
+    static class ChapterEdge { @SerializedName("_id") String _id; float chapterNum; String uploadDate, title; }
     static class PageEdge    { List<String> pictureUrls; int pageNum; }
 }

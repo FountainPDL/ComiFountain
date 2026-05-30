@@ -19,7 +19,8 @@ public class SourceCardAdapter extends RecyclerView.Adapter<SourceCardAdapter.VH
 
     @NonNull @Override
     public VH onCreateViewHolder(@NonNull ViewGroup p, int t) {
-        return new VH(LayoutInflater.from(p.getContext()).inflate(R.layout.item_source_card, p, false));
+        return new VH(LayoutInflater.from(p.getContext())
+            .inflate(R.layout.item_source_card, p, false));
     }
 
     @Override
@@ -29,6 +30,7 @@ public class SourceCardAdapter extends RecyclerView.Adapter<SourceCardAdapter.VH
         h.lang.setText(s.getLang().toUpperCase());
         h.icon.setImageResource(s.getIconResId());
         h.browseBtn.setOnClickListener(v -> listener.onBrowse(s));
+        h.itemView.setOnClickListener(v -> listener.onBrowse(s));
     }
 
     @Override public int getItemCount() { return sources.size(); }

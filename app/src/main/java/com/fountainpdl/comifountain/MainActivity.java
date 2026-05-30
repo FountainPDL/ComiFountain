@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsetsController;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import com.fountainpdl.comifountain.databinding.ActivityMainBinding;
@@ -19,6 +22,7 @@ import com.fountainpdl.comifountain.ui.settings.SettingsFragment;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private int exitPressCount = 0;
 
     public static final String TAG_LIBRARY  = "library";
     public static final String TAG_SEARCH   = "search";
@@ -29,15 +33,26 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Apply theme BEFORE super.onCreate
         ThemeHelper.applyTheme(this);
         super.onCreate(savedInstanceState);
-
-        // Full edge-to-edge
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Apply insets so content sits BELOW the status bar
+        ViewCompat.setOnApplyWindowInsetsListener(binding.fragmentContainer, (v, insets) -> {
+            Insets bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(0, bars.top, 0, 0);
+            return insets;
+        });
+
+        // Bottom nav sits above navigation bar
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav, (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, 0, 0, bars.bottom);
+            return insets;
+        });
 
         setupBottomNav();
         if (savedInstanceState == null) showFragment(TAG_LIBRARY);
@@ -56,16 +71,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showFragment(String tag) {
-        Fragment f = getSupportFragmentManager().findFragmentByTag(tag);
-        if (f == null) f = createFragment(tag);
+        Fragment existing = getSupportFragmentManager().findFragmentByTag(tag);
+        Fragment f = existing != null ? existing : createFragment(tag);
         getSupportFragmentManager().beginTransaction()
-            .replace(R.id.fragment_container, f, tag).commit();
+            .replace(R.id.fragment_container, f, tag)
+            .commit();
+        // Clear backstack when switching tabs
+        getSupportFragmentManager().popBackStack(null,
+            FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        binding.bottomNav.setVisibility(View.VISIBLE);
     }
 
     public void pushFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.fragment_container, fragment, tag)
-            .addToBackStack(tag).commit();
+            .addToBackStack(tag)
+            .commit();
         binding.bottomNav.setVisibility(View.GONE);
     }
 
@@ -86,10 +107,18 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         if (fm.getBackStackEntryCount() > 0) {
             fm.popBackStack();
-            if (fm.getBackStackEntryCount() == 1)
+            if (fm.getBackStackEntryCount() == 0)
                 binding.bottomNav.setVisibility(View.VISIBLE);
         } else {
-            super.onBackPressed();
+            // Double-tap to exit
+            exitPressCount++;
+            if (exitPressCount >= 2) {
+                super.onBackPressed();
+            } else {
+                com.fountainpdl.comifountain.ui.common.ToastManager
+                    .show(this, "Press back again to exit");
+                new android.os.Handler().postDelayed(() -> exitPressCount = 0, 2000);
+            }
         }
     }
 
@@ -101,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
             getWindow().getInsetsController().setSystemBarsBehavior(
                 WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         }
+        // Remove top padding in reader mode
+        binding.fragmentContainer.setPadding(0, 0, 0, 0);
     }
 
     public void showSystemBars() {

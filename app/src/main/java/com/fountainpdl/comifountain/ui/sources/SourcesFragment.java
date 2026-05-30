@@ -74,7 +74,8 @@ public class SourcesFragment extends Fragment {
                     && AppPreferences.getInstance(requireContext()).getLocalUri() == null) {
                 folderPicker.launch(null);
             } else {
-                if (getActivity() instanceof com.fountainpdl.comifountain.MainActivity)
+                Source src = source;
+            if (getActivity() instanceof com.fountainpdl.comifountain.MainActivity)
                     ((com.fountainpdl.comifountain.MainActivity) getActivity()).showFragment("search");
             }
         });
