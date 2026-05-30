@@ -34,11 +34,40 @@ public class MangaRepository {
     public LiveData<Integer>     getUpdatesBadgeCount()                 { return mangaDao.getUpdatesBadgeCount(); }
     public LiveData<Manga>       observeManga(String id)                { return mangaDao.observeMangaById(id); }
 
-    // ── Manga CRUD ────────────────────────────────────────────────────────────
+    /**
+     * Save manga from network — PRESERVES inLibrary flag from DB.
+     * This is the critical fix: never overwrite inLibrary with false on re-fetch.
+     */
+    public void saveManga(Manga m) {
+        exec.execute(() -> {
+            // Check if already in library before replacing
+            Manga existing = mangaDao.getMangaById(m.id);
+            if (existing != null) {
+                m.inLibrary   = existing.inLibrary;
+                m.addedDate   = existing.addedDate;
+                m.categories  = existing.categories;
+                m.lastRead    = existing.lastRead;
+                m.progress    = existing.progress;
+            }
+            mangaDao.insertManga(m);
+        });
+    }
 
-    public void saveManga(Manga m)              { exec.execute(() -> mangaDao.insertManga(m)); }
-    public void saveMangaList(List<Manga> list) { exec.execute(() -> mangaDao.insertAll(list)); }
-    public void updateManga(Manga m)            { exec.execute(() -> mangaDao.updateManga(m)); }
+    public void saveMangaList(List<Manga> list) {
+        exec.execute(() -> {
+            for (Manga m : list) {
+                Manga existing = mangaDao.getMangaById(m.id);
+                if (existing != null) {
+                    m.inLibrary  = existing.inLibrary;
+                    m.addedDate  = existing.addedDate;
+                    m.categories = existing.categories;
+                }
+            }
+            mangaDao.insertAll(list);
+        });
+    }
+
+    public void updateManga(Manga m) { exec.execute(() -> mangaDao.updateManga(m)); }
 
     // ── Library management ────────────────────────────────────────────────────
 
@@ -69,13 +98,13 @@ public class MangaRepository {
             if (!chapters.isEmpty()) syncChapterStats(chapters.get(0).mangaId);
         });
     }
-    public void getFirstUnreadChapter(String mangaId, Callback<Chapter> cb) {
-        exec.execute(() -> cb.onResult(chapterDao.getFirstUnreadChapter(mangaId)));
+    public void getFirstUnreadChapter(String id, Callback<Chapter> cb) {
+        exec.execute(() -> cb.onResult(chapterDao.getFirstUnreadChapter(id)));
     }
-    public void getResumeChapter(String mangaId, Callback<Chapter> cb) {
+    public void getResumeChapter(String id, Callback<Chapter> cb) {
         exec.execute(() -> {
-            Chapter c = chapterDao.getResumeChapter(mangaId);
-            if (c == null) c = chapterDao.getFirstUnreadChapter(mangaId);
+            Chapter c = chapterDao.getResumeChapter(id);
+            if (c == null) c = chapterDao.getFirstUnreadChapter(id);
             cb.onResult(c);
         });
     }
@@ -100,20 +129,25 @@ public class MangaRepository {
 
     // ── Bookmarks ─────────────────────────────────────────────────────────────
 
-    public void setBookmark(String chapId, boolean b)          { exec.execute(() -> chapterDao.setBookmark(chapId, b)); }
-    public LiveData<List<Chapter>> getBookmarkedChapters(String id) { return chapterDao.getBookmarkedChapters(id); }
+    public void setBookmark(String chapId, boolean b) {
+        exec.execute(() -> chapterDao.setBookmark(chapId, b));
+    }
+    public LiveData<List<Chapter>> getBookmarkedChapters(String id) {
+        return chapterDao.getBookmarkedChapters(id);
+    }
 
     // ── Downloads ─────────────────────────────────────────────────────────────
 
     public void markDownloaded(String chapId, String path) {
         exec.execute(() -> chapterDao.markDownloaded(chapId, System.currentTimeMillis(), path));
     }
-    public void clearDownload(String chapId) { exec.execute(() -> chapterDao.clearDownload(chapId)); }
+    public void clearDownload(String chapId) {
+        exec.execute(() -> chapterDao.clearDownload(chapId));
+    }
 
     // ── Categories ────────────────────────────────────────────────────────────
 
     public LiveData<List<Category>> getCategories() { return categoryDao.getAll(); }
-
     public void addCategory(String name) {
         exec.execute(() -> {
             int pos = categoryDao.count();
@@ -121,21 +155,15 @@ public class MangaRepository {
         });
     }
     public void deleteCategory(Category c) { exec.execute(() -> categoryDao.delete(c)); }
-    public void updateCategoryPosition(int id, int pos) {
-        exec.execute(() -> categoryDao.updatePosition(id, pos));
-    }
 
     // ── History ───────────────────────────────────────────────────────────────
 
     public LiveData<List<HistoryEntry>> getRecentHistory() { return historyDao.getRecent(); }
-
     public void recordHistory(String mangaId, String chapterId) {
         exec.execute(() -> historyDao.insert(new HistoryEntry(mangaId, chapterId)));
     }
-    public void clearHistory() { exec.execute(() -> historyDao.clearAll()); }
-    public void clearHistoryForManga(String mangaId) {
-        exec.execute(() -> historyDao.clearForManga(mangaId));
-    }
+    public void clearHistory()                     { exec.execute(historyDao::clearAll); }
+    public void clearHistoryForManga(String id)    { exec.execute(() -> historyDao.clearForManga(id)); }
 
     // ── Search ────────────────────────────────────────────────────────────────
 
@@ -144,10 +172,10 @@ public class MangaRepository {
     // ── Internal ─────────────────────────────────────────────────────────────
 
     private void syncChapterStats(String mangaId) {
-        int total  = chapterDao.getTotalCount(mangaId);
-        int unread = chapterDao.getUnreadCount(mangaId);
+        int    total   = chapterDao.getTotalCount(mangaId);
+        int    unread  = chapterDao.getUnreadCount(mangaId);
         List<Chapter> chapters = chapterDao.getChaptersForMangaSync(mangaId);
-        long latest = 0;
+        long   latest  = 0;
         for (Chapter c : chapters) if (c.date > latest) latest = c.date;
         mangaDao.updateChapterStats(mangaId, total, unread, latest);
     }
