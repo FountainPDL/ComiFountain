@@ -128,12 +128,14 @@ public class SourcesFragment extends Fragment {
                 CustomSource cs = new CustomSource(
                     java.util.UUID.randomUUID().toString(), name, finalUrl,
                     search.isEmpty() ? "/?s={query}" : search);
-                SourceManager.getInstance(requireContext()).addCustomSource(cs, () -> {
-                    if (getActivity() != null) getActivity().runOnUiThread(() -> {
+                SourceManager.getInstance(requireContext()).addCustomSource(cs);
+
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
                         ToastManager.show(requireContext(), name + " added!");
                         refreshExtensionList();
                     });
-                });
+                }
             })
             .setNegativeButton("Cancel", null).show();
     }
