@@ -22,7 +22,6 @@ import com.fountainpdl.comifountain.ui.settings.SettingsFragment;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private int exitPressCount = 0;
 
     public static final String TAG_LIBRARY  = "library";
     public static final String TAG_SEARCH   = "search";
@@ -39,18 +38,18 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Apply insets so content sits BELOW the status bar
+        // Content below status bar
         ViewCompat.setOnApplyWindowInsetsListener(binding.fragmentContainer, (v, insets) -> {
-            Insets bars = insets.getInsets(
-                WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-            v.setPadding(0, bars.top, 0, 0);
+            Insets sys = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() |
+                WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(0, sys.top, 0, 0);
             return insets;
         });
-
-        // Bottom nav sits above navigation bar
+        // Bottom nav above nav bar
         ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav, (v, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(0, 0, 0, bars.bottom);
+            Insets sys = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, 0, 0, sys.bottom);
             return insets;
         });
 
@@ -74,19 +73,18 @@ public class MainActivity extends AppCompatActivity {
         Fragment existing = getSupportFragmentManager().findFragmentByTag(tag);
         Fragment f = existing != null ? existing : createFragment(tag);
         getSupportFragmentManager().beginTransaction()
-            .replace(R.id.fragment_container, f, tag)
-            .commit();
-        // Clear backstack when switching tabs
+            .replace(R.id.fragment_container, f, tag).commit();
         getSupportFragmentManager().popBackStack(null,
             FragmentManager.POP_BACK_STACK_INCLUSIVE);
         binding.bottomNav.setVisibility(View.VISIBLE);
+        binding.fragmentContainer.setPadding(
+            0, binding.fragmentContainer.getPaddingTop(), 0, 0);
     }
 
     public void pushFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.fragment_container, fragment, tag)
-            .addToBackStack(tag)
-            .commit();
+            .addToBackStack(tag).commit();
         binding.bottomNav.setVisibility(View.GONE);
     }
 
@@ -102,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /** Back NEVER exits — just pops the stack or stays on Library. */
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
@@ -109,17 +108,8 @@ public class MainActivity extends AppCompatActivity {
             fm.popBackStack();
             if (fm.getBackStackEntryCount() == 0)
                 binding.bottomNav.setVisibility(View.VISIBLE);
-        } else {
-            // Double-tap to exit
-            exitPressCount++;
-            if (exitPressCount >= 2) {
-                super.onBackPressed();
-            } else {
-                com.fountainpdl.comifountain.ui.common.ToastManager
-                    .show(this, "Press back again to exit");
-                new android.os.Handler().postDelayed(() -> exitPressCount = 0, 2000);
-            }
         }
+        // Do nothing when already at root — intentionally does not call super
     }
 
     public void hideSystemBars() {
@@ -130,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
             getWindow().getInsetsController().setSystemBarsBehavior(
                 WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         }
-        // Remove top padding in reader mode
         binding.fragmentContainer.setPadding(0, 0, 0, 0);
     }
 
